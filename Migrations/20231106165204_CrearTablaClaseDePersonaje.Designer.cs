@@ -4,6 +4,7 @@ using LostArkOffice.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LostArkOffice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231106165204_CrearTablaClaseDePersonaje")]
+    partial class CrearTablaClaseDePersonaje
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,77 +46,6 @@ namespace LostArkOffice.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ClasesDePersonaje");
-                });
-
-            modelBuilder.Entity("LostArkOffice.Models.DataModels.Personaje", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClaseDePersonajeId")
-                        .HasColumnType("int");
-
-                    b.Property<short?>("Habilidad")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("ItemLevel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("PropietarioId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClaseDePersonajeId");
-
-                    b.HasIndex("PropietarioId");
-
-                    b.ToTable("Personajes");
-                });
-
-            modelBuilder.Entity("LostArkOffice.Models.DataModels.PersonajeRaid", b =>
-                {
-                    b.Property<int>("PersonajeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TipoDeRaidId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PersonajeId", "TipoDeRaidId");
-
-                    b.HasIndex("TipoDeRaidId");
-
-                    b.ToTable("PersonajesRaid");
-                });
-
-            modelBuilder.Entity("LostArkOffice.Models.DataModels.TipoDeRaid", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<short>("NumJugadores")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TiposDeRaid");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -314,44 +246,6 @@ namespace LostArkOffice.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("LostArkOffice.Models.DataModels.Personaje", b =>
-                {
-                    b.HasOne("LostArkOffice.Models.DataModels.ClaseDePersonaje", "Clase")
-                        .WithMany()
-                        .HasForeignKey("ClaseDePersonajeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Propietario")
-                        .WithMany()
-                        .HasForeignKey("PropietarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Clase");
-
-                    b.Navigation("Propietario");
-                });
-
-            modelBuilder.Entity("LostArkOffice.Models.DataModels.PersonajeRaid", b =>
-                {
-                    b.HasOne("LostArkOffice.Models.DataModels.Personaje", "Personaje")
-                        .WithMany("PersonajeRaids")
-                        .HasForeignKey("PersonajeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LostArkOffice.Models.DataModels.TipoDeRaid", "TipoDeRaid")
-                        .WithMany()
-                        .HasForeignKey("TipoDeRaidId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Personaje");
-
-                    b.Navigation("TipoDeRaid");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -401,11 +295,6 @@ namespace LostArkOffice.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("LostArkOffice.Models.DataModels.Personaje", b =>
-                {
-                    b.Navigation("PersonajeRaids");
                 });
 #pragma warning restore 612, 618
         }
