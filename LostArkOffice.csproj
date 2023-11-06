@@ -15,7 +15,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="src\index.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="wwwroot\dist\" />
   </ItemGroup>
 
 </Project>
