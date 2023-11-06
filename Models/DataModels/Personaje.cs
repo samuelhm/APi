@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using LostArkOffice.Models.DataModels;
 namespace LostArkOffice.Models.DataModels
 {
     public class Personaje
@@ -26,7 +26,7 @@ namespace LostArkOffice.Models.DataModels
         [Required]
         public string PropietarioId { get; set; }
         [ForeignKey("PropietarioId")]
-        public virtual IdentityUser Propietario { get; set; }
+        public virtual Usuario Propietario { get; set; }
 
         public virtual ICollection<PersonajeRaid> PersonajeRaids { get; set; }
     }
