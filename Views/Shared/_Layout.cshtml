@@ -3,7 +3,7 @@
 @inject SignInManager<Usuario> SignInManager
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,11 +47,12 @@
     </header>
 
     <main role="main" class="container">
+        <div class="row"><div id="titulovista" class="col text-center"><h1>@ViewBag.Title</h1></div></div>
         <!-- RenderBody() es donde se renderizarán las vistas específicas de cada página -->
         @RenderBody()
     </main>
 
-    <footer class="footer mt-auto py-3 bg-light">
+    <footer class="footer mt-auto py-3">
 
     </footer>
     <script type="module" src="~/dist/bundle.js"></script>

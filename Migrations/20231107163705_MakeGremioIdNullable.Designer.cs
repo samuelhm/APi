@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LostArkOffice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231107100946_CrearColumnaGremioEnUsuario")]
-    partial class CrearColumnaGremioEnUsuario
+    [Migration("20231107163705_MakeGremioIdNullable")]
+    partial class MakeGremioIdNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

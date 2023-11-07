@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using LostArkOffice.Models.ViewModels;
 using LostArkOffice.Models.DataModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace LostArkOffice.Controllers
 {
@@ -26,13 +27,24 @@ namespace LostArkOffice.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var userName = model.UsernameOrEmail;
+                if (new EmailAddressAttribute().IsValid(model.UsernameOrEmail))
+                {
+                    // Si es un email, buscar el nombre de usuario correspondiente
+                    var user = await _userManager.FindByEmailAsync(model.UsernameOrEmail);
+                    if (user != null)
+                    {
+                        userName = user.UserName;
+                    }
+                }
+                var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
@@ -42,6 +54,7 @@ namespace LostArkOffice.Controllers
                     }
                     else
                     {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                         return RedirectToAction("index", "home");
                     }
                 }
@@ -61,11 +74,12 @@ namespace LostArkOffice.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new Usuario { UserName = model.Email, Email = model.Email };
+                var user = new Usuario { UserName = model.Username, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -83,11 +97,26 @@ namespace LostArkOffice.Controllers
             return View(model);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> IsEmailInUse(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"Email {email} is already in use.");
+            }
         }
     }
 }

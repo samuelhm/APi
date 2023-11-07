@@ -726,7 +726,17 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bootstrap */ \"./node_modules/bootstrap/dist/js/bootstrap.esm.js\");\n/* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.min.css */ \"./node_modules/bootstrap/dist/css/bootstrap.min.css\");\n/* harmony import */ var _src_site_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../src/site.css */ \"./src/site.css\");\n﻿\r\n\r\n\r\n\n\n//# sourceURL=webpack://lostarkoffice/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bootstrap */ \"./node_modules/bootstrap/dist/js/bootstrap.esm.js\");\n/* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.min.css */ \"./node_modules/bootstrap/dist/css/bootstrap.min.css\");\n/* harmony import */ var _src_site_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../src/site.css */ \"./src/site.css\");\n/* harmony import */ var _src_validarEmail__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../src/validarEmail */ \"./src/validarEmail.js\");\n﻿\r\n\r\n\r\n\r\n\r\n\r\n// Asegúrate de que el DOM esté completamente cargado antes de añadir manejadores de eventos\r\ndocument.addEventListener('DOMContentLoaded', function () {\r\n    // Asumiendo que tienes campos con estos ID en tu formulario\r\n    (0,_src_validarEmail__WEBPACK_IMPORTED_MODULE_3__[\"default\"])('Email', 'registrationForm');\r\n});\n\n//# sourceURL=webpack://lostarkoffice/./src/index.js?");
+
+/***/ }),
+
+/***/ "./src/validarEmail.js":
+/*!*****************************!*\
+  !*** ./src/validarEmail.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n﻿const checkEmailUniqueness = (emailFieldId, formId) => {\r\n    const emailField = document.getElementById(emailFieldId);\r\n    const form = document.getElementById(formId);\r\n\r\n    emailField.addEventListener('blur', function () {\r\n        const emailValue = emailField.value;\r\n\r\n        if (emailValue) {\r\n            fetch(`/Account/IsEmailInUse?email=${encodeURIComponent(emailValue)}`)\r\n                .then((response) => response.json())\r\n                .then((data) => {\r\n                    if (data !== true) {\r\n                        emailField.setCustomValidity(data);\r\n                    } else {\r\n                        emailField.setCustomValidity('');\r\n                    }\r\n                    form.classList.add('was-validated');\r\n                });\r\n        }\r\n    });\r\n\r\n    form.addEventListener('submit', function (event) {\r\n        if (!form.checkValidity()) {\r\n            event.preventDefault();\r\n            event.stopPropagation();\r\n        }\r\n    }, false);\r\n};\r\n\r\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (checkEmailUniqueness);\n\n//# sourceURL=webpack://lostarkoffice/./src/validarEmail.js?");
 
 /***/ }),
 
