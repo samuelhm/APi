@@ -4,12 +4,12 @@ namespace LostArkOffice.Models.DataModels
 {
     public class PersonajeRaid
     {
+        [ForeignKey("Personaje")]
         public int PersonajeId { get; set; }
-        [ForeignKey("PersonajeId")]
         public virtual Personaje Personaje { get; set; }
 
+        [ForeignKey("TipoDeRaid")]
         public int TipoDeRaidId { get; set; }
-        [ForeignKey("TipoDeRaidId")]
         public virtual TipoDeRaid TipoDeRaid { get; set; }
     }
 }

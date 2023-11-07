@@ -11,8 +11,8 @@ namespace LostArkOffice.Models.DataModels
         public int Id { get; set; }
 
         [Required]
+        [ForeignKey("Propietario")]
         public string PropietarioId { get; set; }
-        [ForeignKey("PropietarioId")]
         public virtual Usuario Propietario { get; set; }
 
         public DateTime StartDate { get; set; }

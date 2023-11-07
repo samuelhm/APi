@@ -18,6 +18,7 @@ namespace LostArkOffice.Models
         public DbSet<Raid> Raids { get; set; }
         public DbSet<RaidPersonaje> RaidsPersonajes { get; set; }
         public DbSet<DisponibilidadUsuario> DisponibilidadesUsuarios { get; set; }
+        public DbSet<Gremio> Gremios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

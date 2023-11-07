@@ -19,13 +19,13 @@ namespace LostArkOffice.Models.DataModels
         public short? Habilidad { get; set; }
 
         [Required]
+        [ForeignKey("ClaseDePersonaje")]
         public int ClaseDePersonajeId { get; set; }
-        [ForeignKey("ClaseDePersonajeId")]
-        public virtual ClaseDePersonaje Clase { get; set; }
+        public virtual ClaseDePersonaje ClaseDePersonaje { get; set; }
 
         [Required]
+        [ForeignKey("Propietario")]
         public string PropietarioId { get; set; }
-        [ForeignKey("PropietarioId")]
         public virtual Usuario Propietario { get; set; }
 
         public virtual ICollection<PersonajeRaid> PersonajeRaids { get; set; }

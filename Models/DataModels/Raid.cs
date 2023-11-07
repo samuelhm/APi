@@ -16,7 +16,6 @@ namespace LostArkOffice.Models.DataModels
 
         [ForeignKey("TipoDeRaid")]
         public int TipoDeRaidId { get; set; }
-
         public TipoDeRaid TipoDeRaid { get; set; }
 
         public virtual ICollection<RaidPersonaje> RaidPersonajes { get; set; } = new List<RaidPersonaje>();
