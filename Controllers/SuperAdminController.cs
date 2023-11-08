@@ -1,4 +1,5 @@
-﻿using LostArkOffice.Models.ViewModels.SuperAdmin;
+﻿using LostArkOffice.Models.DataModels;
+using LostArkOffice.Models.ViewModels.SuperAdmin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,12 @@ namespace LostArkOffice.Controllers
     public class SuperAdminController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<Usuario> _userManager;
         
-        public SuperAdminController(RoleManager<IdentityRole> roleManager)
+        public SuperAdminController(RoleManager<IdentityRole> roleManager,UserManager<Usuario> userManager)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -58,10 +61,14 @@ namespace LostArkOffice.Controllers
             ViewBag.Title = "Tipos de Raid";
             return View();
         }
-        public IActionResult Usuarios()
+        public async Task<IActionResult> Usuarios()
         {
+            var model = new UsuariosViewModel
+            {
+                Usuarios = await _userManager.Users.Include(u => u.Gremio).ToListAsync()
+            };
             ViewBag.Title = "Usuarios";
-            return View();
+            return View(model);
         }
 
         [HttpPost]
