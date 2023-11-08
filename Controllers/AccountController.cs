@@ -79,7 +79,7 @@ namespace LostArkOffice.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new Usuario { UserName = model.Username, Email = model.Email };
+                var user = new Usuario { UserName = model.Username, Email = model.Email, Nombre = model.Username };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -108,14 +108,50 @@ namespace LostArkOffice.Controllers
         [HttpGet]
         public async Task<IActionResult> IsEmailInUse(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
+            try
             {
-                return Json(true);
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    return Json(true);
+                }
+                else
+                {
+                    return Json($"Email {email} is already in use.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json($"Email {email} is already in use.");
+                // Log the exception
+                _logger.LogError(ex, "Error checking email");
+
+                // Return a generic error message or a detailed one based on your error handling policy
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> IsUserInUse(string username)
+        {
+            try
+            {
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null)
+                {
+                    return Json(true);
+                }
+                else
+                {
+                    return Json($"Usuario {username} Está en uso.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "Error checking User");
+
+                // Return a generic error message or a detailed one based on your error handling policy
+                return StatusCode(500, "An error occurred while processing your request.");
             }
         }
     }

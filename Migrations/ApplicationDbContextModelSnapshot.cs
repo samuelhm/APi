@@ -221,7 +221,6 @@ namespace LostArkOffice.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("GremioId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
@@ -493,9 +492,7 @@ namespace LostArkOffice.Migrations
                 {
                     b.HasOne("LostArkOffice.Models.DataModels.Gremio", "Gremio")
                         .WithMany()
-                        .HasForeignKey("GremioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GremioId");
 
                     b.Navigation("Gremio");
                 });

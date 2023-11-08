@@ -5,7 +5,7 @@
 namespace LostArkOffice.Migrations
 {
     /// <inheritdoc />
-    public partial class MakeGremioIdNullable : Migration
+    public partial class GremioNullable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,8 +14,7 @@ namespace LostArkOffice.Migrations
                 name: "GremioId",
                 table: "AspNetUsers",
                 type: "int",
-                nullable: true,
-                defaultValue: null);
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_GremioId",
@@ -27,8 +26,7 @@ namespace LostArkOffice.Migrations
                 table: "AspNetUsers",
                 column: "GremioId",
                 principalTable: "Gremios",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />

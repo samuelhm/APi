@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LostArkOffice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231107163705_MakeGremioIdNullable")]
-    partial class MakeGremioIdNullable
+    [Migration("20231107180710_GremioNullable")]
+    partial class GremioNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,7 +224,6 @@ namespace LostArkOffice.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("GremioId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
@@ -496,9 +495,7 @@ namespace LostArkOffice.Migrations
                 {
                     b.HasOne("LostArkOffice.Models.DataModels.Gremio", "Gremio")
                         .WithMany()
-                        .HasForeignKey("GremioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GremioId");
 
                     b.Navigation("Gremio");
                 });

@@ -14,6 +14,6 @@ namespace LostArkOffice.Models.DataModels
 
         [ForeignKey("Gremio")]
         public int? GremioId { get; set; }
-        public virtual Gremio Gremio { get; set; }
+        public virtual Gremio? Gremio { get; set; }
     }
 }
