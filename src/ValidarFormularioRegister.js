@@ -1,5 +1,8 @@
 ﻿const validarFormularioRegister = () => {
     const form = document.getElementById('registrationForm');
+    if (!form) {
+        return; // Sale de la función si el formulario no existe
+    }
     const inputs = form.querySelectorAll('input');
     const checkEmail = async (email) => {
         try {

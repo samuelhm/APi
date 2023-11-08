@@ -4,5 +4,7 @@ import "../src/site.css";
 import validarFormularioRegister from "../src/ValidarFormularioRegister";
 
 document.addEventListener('DOMContentLoaded', () => {
-    validarFormularioRegister();
+    if (document.getElementById('registrationForm')) { //Validar solo si existe el formulario con id registrationForm
+        validarFormularioRegister();
+    }
 });

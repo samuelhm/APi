@@ -1,5 +1,36 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model LostArkOffice.Models.ViewModels.SuperAdmin.RolesViewModel;
+<form id="crearRolForm" asp-controller="SuperAdmin" asp-action="CrearRol">
+    <div class="form-group">
+        <label asp-for="NombreRol" class="control-label"></label>
+        <input asp-for="NombreRol" class="form-control" />
+        <span asp-validation-for="NombreRol" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear Rol</button>
+</form>
+
+<hr />
+
+<!-- Tabla para mostrar los roles existentes -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre del Rol</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model.Roles)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    <!-- Botón para editar -->
+                    <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-info">Editar</a>
+
+                    <!-- Botón para eliminar -->
+                    <a asp-action="DeleteRole" asp-route-id="@role.Id" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
