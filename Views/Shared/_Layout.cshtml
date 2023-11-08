@@ -23,20 +23,38 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu de Jugador</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Administrar Eleneco</a></li>
+                                <li><a class="dropdown-item" href="#">Configurar Horario</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Dropdown link
-                            </a>
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu de Oficial</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <li><a class="dropdown-item">Configurar una Raid</a></li>
+                                <li><a class="dropdown-item">Ver/Modificar Calendario</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin de Gremio</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item">Establecer Habilidad Jugadores</a></li>
+                                <li><a class="dropdown-item">Menú de Gremio</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-controller="SuperAdmin" asp-action="Index">Super Administrador</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="SuperAdmin" asp-action="Usuarios">Usuarios</a></li>
+                                <li><a class="dropdown-item" asp-controller="SuperAdmin" asp-action="Gremios">Gremios</a></li>
+                                <li><a class="dropdown-item" asp-controller="SuperAdmin" asp-action="TiposDeRaid">Tipos De Raid</a></li>
+                                <li><a class="dropdown-item" asp-controller="SuperAdmin" asp-action="ClasesDePersonajes">Clases De Personajes</a></li>
+                                <li><a class="dropdown-item" asp-controller="SuperAdmin" asp-action="Personajes">Personajes</a></li>
+                                <li><a class="dropdown-item" asp-controller="SuperAdmin" asp-action="Disponibilidades">Disponibilidades</a></li>
+                                <li><a class="dropdown-item" asp-controller="SuperAdmin" asp-action="Raids">Raids</a></li>
+                                <li><a class="dropdown-item" asp-controller="SuperAdmin" asp-action="Roles">Roles</a></li>
                             </ul>
                         </li>
                     </ul>
