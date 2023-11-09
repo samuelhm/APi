@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace LostArkOffice.Controllers
 {
@@ -42,7 +44,7 @@ namespace LostArkOffice.Controllers
         public async Task<IActionResult> Gremios()
         {
             var gremios = await _context.Gremios.ToListAsync();
-            var gremiosviewmodel = new List<GremiosViewModel>(); //el viewmodel será una lista de gremios
+            var gremiosviewmodel = new List<GremiosViewModel>(); //el viewbag será una lista de gremios
             var gremioviewmodel = new GremiosViewModel();
             foreach (var gremio in gremios)
             {
@@ -138,6 +140,52 @@ namespace LostArkOffice.Controllers
             if (rolesExistentes.Contains(Rol.Name)) { var result = await _userManager.RemoveFromRoleAsync(Usuario, Rol.Name); return Json(result); }
             else { var result = await _userManager.AddToRoleAsync(Usuario, Rol.Name); return Json(new { success = result.Succeeded, message = result.Succeeded ? "Operación exitosa" : "Error en la operación" }); }
 
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CrearGremio(string Nombre)
+        {
+            if (Nombre != null)
+            {
+                var nuevoGremio = new Gremio() { Nombre = Nombre };
+                await _context.Gremios.AddAsync(nuevoGremio);
+                 var result = await _context.SaveChangesAsync();
+                return RedirectToAction("Gremios");
+            }
+            else return BadRequest("El nombre es requerido para agregar un nuevo nombre");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] 
+        public async Task<IActionResult> EditarGremio([FromBody] GremiosViewModel modelo)
+        {
+            var gremio = await _context.Gremios.FindAsync(modelo.Id);
+            if (gremio == null || modelo.Nombre.IsNullOrEmpty() ) return BadRequest("Gremio no Encontrado en EditarGremio del controlador SuperAdmin");
+            else
+            {
+                gremio.Nombre = modelo.Nombre;
+                _context.Gremios.Update(gremio);
+                var result = await _context.SaveChangesAsync();
+                if (result > 0)
+                {
+                    return RedirectToAction("Gremios");
+                }
+                else return BadRequest("No se han podido guardar los cambios en savechangesasync");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarGremio([FromBody] int id)
+        {
+            var gremio = await _context.Gremios.FindAsync(id);
+            if (gremio == null) return BadRequest("Gremio no Encontrado en BorrarGremio del controlador SuperAdmin");
+            _context.Gremios.Remove(gremio);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return RedirectToAction("Gremios");
+            else return BadRequest("no se ha podido borrar");
         }
 
     }

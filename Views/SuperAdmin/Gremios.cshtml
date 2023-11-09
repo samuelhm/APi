@@ -1,4 +1,5 @@
 ﻿@model LostArkOffice.Models.ViewModels.SuperAdmin.GremiosViewModel
+@Html.AntiForgeryToken()
 
 <form asp-controller="SuperAdmin" asp-action="CrearGremio" id="crearGremioForm" class="">
     <h2>Crear Nuevo Gremio</h2>
@@ -24,11 +25,73 @@
     <tbody>
         @foreach (var gremio in ViewBag.ListaGremios )
         {
-            <tr>
+            <tr id="row-@gremio.Id">
                 <td>@gremio.Id</td>
-                <td>@gremio.Nombre</td>
-                <td></td>
+                <td>
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="spangremionombre-@gremio.Nombre">@gremio.Nombre</span><input onblur="hideinput('@gremio.Id')" class="form-control" id="inputgremionombre-@gremio.Id" type="text" style="display:none" /><a id="a-@gremio.Id" href="#" onclick="showinput('@gremio.Id')"><img class="ms-2" onclick="" src="~/Images/Iconos/edit.svg" /></a>
+                    </div>
+                </td>
+                <td>
+                    <a style="display:none" href="#" id="a-edit-@gremio.Id" onclick="jsEditarGremio(@gremio.Id)"><img src="~/Images/Iconos/floppy.svg" /></a>
+                    <a href="#" id="a-delete-@gremio.Id" onclick="jsBorrarGremio(@gremio.Id)"><img src="~/Images/Iconos/delete.svg" /></a>
+                </td>
             </tr>
         }
     </tbody>
 </table>
+<script>
+    function jsBorrarGremio(gremioId) {
+        console.log("BorrandoGremio: " + gremioId);
+        fetch('/SuperAdmin/EliminarGremio',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', RequestVerificationToken: document.querySelector('input[name="__RequestVerificationToken"]').value },
+                body: JSON.stringify(gremioId)
+            })
+            .then(response => {
+                if (response.ok) { document.getElementById('row-' + gremioId).remove(); } //eliminar fila si fue exitoso
+                else { alert('Hubo un error al intentar eliminar el gremio.'); }
+            })
+            .catch(error => { console.error('Error:', error); });
+        
+    }
+</script>
+<script>
+    function jsEditarGremio(gremioId,gremioName) {
+        console.log("Editando Gremio, Id: " + gremioId+ " Nombre: "+ gremioName);
+        fetch('/SuperAdmin/EditarGremio',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', RequestVerificationToken: document.querySelector('input[name="__RequestVerificationToken"]').value },
+                body: JSON.stringify({ Id: gremioId,Nombre: gremioName })
+            })
+            .then(response => {
+                if (response.ok) {  } //Actualizar la fila
+                else { alert('Hubo un error al intentar Editar el gremio.'); }
+            })
+            .catch(error => { console.error('Error:', error); });
+
+    }
+</script>
+<script>
+    function showinput(inputId) {
+        var inputElement = document.getElementById("inputgremionombre-"+inputId);
+        var aElement = document.getElementById("a-" + inputId);
+        var aEditElement = document.getElementById("a-edit-" + inputId);
+        
+        if (inputElement) { inputElement.style.display = 'block'; inputElement.value = 'Introduce Nuevo Nombre' } else { console.log("inputElement no encontrado") }
+        if (aElement) { aElement.style.display = 'none' } else {console.log("aElement no encontrado") }
+        if (aEditElement) { aEditElement.style.display = 'inline-block' } else { console.log("aElement no encontrado") }
+    }
+    function hideinput(inputId) {
+        var inputElement = document.getElementById("inputgremionombre-" + inputId);
+        var aElement = document.getElementById("a-" + inputId);
+        var aEditElement = document.getElementById("a-edit-" + inputId);
+
+        if (inputElement) { inputElement.style.display = 'none';} else { console.log("inputElement no encontrado") }
+        if (aElement) { aElement.style.display = 'block' } else { console.log("aElement no encontrado") }
+        if (aEditElement) { aEditElement.style.display = 'none' } else { console.log("aElement no encontrado") }
+
+    }
+</script>
