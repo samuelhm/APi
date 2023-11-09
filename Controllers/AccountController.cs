@@ -20,7 +20,6 @@ namespace LostArkOffice.Controllers
         [HttpGet]
         public  IActionResult Login(string returnUrl = null)
         {
-
             ViewBag.Title = "Login";
             ViewData["ReturnUrl"] = returnUrl;
             return View();

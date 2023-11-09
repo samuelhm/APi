@@ -1,0 +1,9 @@
+﻿@model ErrorViewModel
+
+<h1>Se ha producido un error.</h1>
+@if (!string.IsNullOrEmpty(Model.RequestId))
+{
+    <p>
+        <strong>ID de solicitud:</strong> @Model.RequestId
+    </p>
+}

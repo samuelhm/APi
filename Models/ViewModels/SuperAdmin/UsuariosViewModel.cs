@@ -6,13 +6,8 @@ namespace LostArkOffice.Models.ViewModels.SuperAdmin
     public class UsuariosViewModel
     {
         public string NombreUsuario {  get; set; }
-        public List<Usuario> Usuarios { get; set; }
-        public int? GremioID { get; set; }
-        
-        public UsuariosViewModel() 
-        {
-            NombreUsuario = string.Empty;
-            Usuarios = new List<Usuario>();
-        }
+        public string? Gremio { get; set; }
+        public string? Roles { get; set; }
+        public string Email { get; set; }
     }
 }

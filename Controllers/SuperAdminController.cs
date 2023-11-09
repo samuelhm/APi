@@ -1,20 +1,24 @@
 ﻿using LostArkOffice.Models.DataModels;
 using LostArkOffice.Models.ViewModels.SuperAdmin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LostArkOffice.Controllers
 {
+    [Authorize(Roles = "SuperAdmin")]
     public class SuperAdminController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<Usuario> _userManager;
-        
-        public SuperAdminController(RoleManager<IdentityRole> roleManager,UserManager<Usuario> userManager)
+        private readonly ILogger<SuperAdminController> _logger;
+
+        public SuperAdminController(RoleManager<IdentityRole> roleManager,UserManager<Usuario> userManager, ILogger<SuperAdminController> logger)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -63,12 +67,26 @@ namespace LostArkOffice.Controllers
         }
         public async Task<IActionResult> Usuarios()
         {
-            var model = new UsuariosViewModel
+            var usuariosimportados = await _userManager.Users.Include(u => u.Gremio).ToListAsync();
+
+            var modelosvista = new List<UsuariosViewModel>();
+
+            foreach ( var user in usuariosimportados ) //rellenar modelosvista con todos los usuarios
             {
-                Usuarios = await _userManager.Users.Include(u => u.Gremio).ToListAsync()
-            };
+                var roles = await _userManager.GetRolesAsync(user);
+                var userviewmodel = new UsuariosViewModel
+                {
+                    NombreUsuario = user.UserName,
+                    Gremio = user.Gremio?.Nombre,
+                    Roles = string.Join(", ", roles), // Concatenar todos los roles en una cadena
+                    Email = user.Email
+
+                };
+                modelosvista.Add(userviewmodel);
+            }
+            ViewBag.ListaRoles = _roleManager.Roles.ToList();
             ViewBag.Title = "Usuarios";
-            return View(model);
+            return View(modelosvista);
         }
 
         [HttpPost]
@@ -89,6 +107,26 @@ namespace LostArkOffice.Controllers
                 }
             }
             return RedirectToAction("Roles");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AsignarRol(string userID,string rolID)
+        {
+
+            var Usuario = await _userManager.FindByNameAsync(userID);
+            if (Usuario == null) return Json(new { success = false, message = "Usuario no encontrado" });
+            var Rol = await _roleManager.FindByIdAsync(rolID);
+            if (Rol == null) return Json(new { success = false, message = "Rol no existe" });
+            var rolesExistentes = await _userManager.GetRolesAsync(Usuario);
+            if (rolesExistentes.Count == 0)
+            {
+                var result = await _userManager.AddToRoleAsync(Usuario,Rol.Name);
+                return Json(new { success = result.Succeeded, message = result.Succeeded ? "Operación exitosa" : "Error en la operación" });
+            }
+            if (rolesExistentes.Contains(Rol.Name)) { var result = await _userManager.RemoveFromRoleAsync(Usuario, Rol.Name); return Json(result); }
+            else { var result = await _userManager.AddToRoleAsync(Usuario, Rol.Name); return Json(new { success = result.Succeeded, message = result.Succeeded ? "Operación exitosa" : "Error en la operación" }); }
+
         }
 
     }

@@ -1,42 +1,63 @@
-﻿@model LostArkOffice.Models.ViewModels.SuperAdmin.UsuariosViewModel
+﻿@model IEnumerable<LostArkOffice.Models.ViewModels.SuperAdmin.UsuariosViewModel>
+@using Microsoft.AspNetCore.Identity;
 
+@{
+    var rolesList = ViewBag.ListaRoles as IList<IdentityRole>;
+}
+@Html.AntiForgeryToken()
 
-<form id="crearUserForm" asp-controller="SuperAdmin" asp-action="CrearUser">
-    <div class="form-group">
-        <label asp-for="NombreUsuario" class="control-label"></label>
-        <input asp-for="NombreUsuario" class="form-control" />
-        <span asp-validation-for="NombreUsuario" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Crear Usuario</button>
-</form>
-
-<hr />
-
-<!-- Tabla para mostrar los roles existentes -->
 <table class="table">
     <thead>
         <tr>
             <th>Nombre del Usuario</th>
+            <th>Email</th>
             <th>Gremio</th>
-            <th>Rol</th>
-            <th>Acciones</th>
+            <th>Roles</th>
+            <th>Asignar</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model.Usuarios)
+        @foreach (var user in Model)
         {
             <tr>
-                <td>@user.UserName</td>
-                <td>@user.Gremio?.Nombre</td>
-                <td></td>
-                <td>
-                    <!-- Botón para editar -->
-                    <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-info">Editar</a>
-
-                    <!-- Botón para eliminar -->
-                    <a asp-action="DeleteUser" asp-route-id="@user.Id" class="btn btn-danger">Eliminar</a>
+                <td>@user.NombreUsuario</td>
+                <td>@user.Email</td>
+                <td>@user.Gremio</td>
+                <td>@user.Roles</td>
+                <td><select id="select-@user.NombreUsuario" class="form-select" aria-label="Roles" onchange="asignarRol(this,'@user.NombreUsuario')"><option selected>AsignarRoles</option>
+                    @foreach (var rol in rolesList)
+                        {
+                            <option value="@rol.Id">@rol.Name</option>
+                        }
+                    </select>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<script>
+    function asignarRol(element, userId) {
+        var rolId = element.value;
+        console.log("Usuario: " + userId + ", Rol: " + rolId);
+
+        // Aquí puedes agregar una solicitud AJAX para enviar esta información al servidor
+        // Por ejemplo:
+        
+        fetch('/SuperAdmin/AsignarRol', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                RequestVerificationToken: document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: `userID=${encodeURIComponent(userId)}&rolID=${encodeURIComponent(rolId)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        
+    }
+</script>
