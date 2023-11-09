@@ -1,5 +1,34 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model LostArkOffice.Models.ViewModels.SuperAdmin.GremiosViewModel
+
+<form asp-controller="SuperAdmin" asp-action="CrearGremio" id="crearGremioForm" class="">
+    <h2>Crear Nuevo Gremio</h2>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Nombre" class="control-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="form-group mt-2">
+        <input type="submit" value="CrearGremio" class="btn btn-primary" />
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id del Gremio</th>
+            <th>Nombre Del Gremio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var gremio in ViewBag.ListaGremios )
+        {
+            <tr>
+                <td>@gremio.Id</td>
+                <td>@gremio.Nombre</td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,4 +1,5 @@
-﻿using LostArkOffice.Models.DataModels;
+﻿using LostArkOffice.Models;
+using LostArkOffice.Models.DataModels;
 using LostArkOffice.Models.ViewModels.SuperAdmin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,12 +14,14 @@ namespace LostArkOffice.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<Usuario> _userManager;
         private readonly ILogger<SuperAdminController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public SuperAdminController(RoleManager<IdentityRole> roleManager,UserManager<Usuario> userManager, ILogger<SuperAdminController> logger)
+        public SuperAdminController(RoleManager<IdentityRole> roleManager,UserManager<Usuario> userManager, ILogger<SuperAdminController> logger,ApplicationDbContext context)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -36,10 +39,18 @@ namespace LostArkOffice.Controllers
             ViewBag.Title = "Disponibilidades";
             return View();
         }
-        public IActionResult Gremios()
+        public async Task<IActionResult> Gremios()
         {
+            var gremios = await _context.Gremios.ToListAsync();
+            var gremiosviewmodel = new List<GremiosViewModel>(); //el viewmodel será una lista de gremios
+            var gremioviewmodel = new GremiosViewModel();
+            foreach (var gremio in gremios)
+            {
+                gremiosviewmodel.Add( new GremiosViewModel { Id=gremio.Id,Nombre=gremio.Nombre }); //rellenamos con todos los gremios existentes
+            }
+            ViewBag.ListaGremios = gremiosviewmodel;
             ViewBag.Title = "Gremios";
-            return View();
+            return View(gremioviewmodel);
         }
         public IActionResult Personajes()
         {
@@ -95,7 +106,7 @@ namespace LostArkOffice.Controllers
         {
             if (ModelState.IsValid) 
             { 
-                IdentityRole nuevoRol = new IdentityRole(modelo.NombreRol);
+                IdentityRole nuevoRol = new(modelo.NombreRol);
                 IdentityResult resultado = await _roleManager.CreateAsync(nuevoRol);
                 if (resultado.Succeeded)
                 {
