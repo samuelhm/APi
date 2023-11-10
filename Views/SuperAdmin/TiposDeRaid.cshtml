@@ -1,5 +1,73 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model LostArkOffice.Models.DataModels.TipoDeRaid
+@Html.AntiForgeryToken()
+
+<form asp-controller="SuperAdmin" asp-action="CrearTipoDeRaid" id="crearTipoDeRaidForm" class="">
+    <h2>Crear Nuevo Tipo de Raid</h2>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Nombre" class="control-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NumJugadores" class="control-label"></label>
+        <select asp-for="NumJugadores" class="form-control">
+            <option value="4">4</option>
+            <option value="8">8</option>
+        </select>
+        <span asp-validation-for="NumJugadores" class="text-danger"></span>
+    </div>
+    <div class="form-group mt-2">
+        <input type="submit" value="CrearTipoDeRaid" class="btn btn-primary" />
+    </div>
+</form>
+<h2 class="mt-5">Lista Tipos de Raid</h2>
+<table class="table">
+    <thead>
+
+        <tr>
+            <th>Nombre</th>
+            <th>Num Jugadores</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var raid in ViewBag.TiposDeRaidLista)
+        {
+            <tr id="row-@raid.Id">
+                <td>@raid.Nombre</td>
+                <td>
+                    <select onchange="jsMostrarSaveIcon(@raid.Id,@raid.NumJugadores)" style="width:min-content;float: left" id="selectTipoRaid-@raid.Id" class="form-select" aria-label="Num Jugadores">
+                        @if (raid.NumJugadores == 4)
+                        {
+                            <option selected value="4">4</option>
+                            <option value="8">8</option>
+                        }
+                        else
+                        {
+                        <option value="8" selected>8</option>
+                        <option value="4">4</option>
+                        }
+                    </select><a class="ms-1"style="display:none" href="#" id="a-edit-@raid.Id" onclick="jsEditarTipoRaid(@raid.Id)"><img style="width:auto" src="~/Images/Iconos/floppy.svg" /></a>
+                </td>
+                <td>
+                    <a href="#" id="a-delete-@raid.Id" onclick="jsBorrarTipoRaid(@raid.Id)"><img src="~/Images/Iconos/delete.svg" /></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    function jsMostrarSaveIcon(selectId,NumJug) { 
+        var selectEl = document.getElementById("selectTipoRaid-" + selectId);
+        var iconoguardar = document.getElementById("a-edit-" + selectId);
+        if (!iconoguardar) { console.log("no se ha encontrado el a-edit-"); return; }
+        if (!selectEl) { console.log("no se ha encontrado el select"); return; }
+        console.log("SelectElValue= " + selectEl.value);
+        console.log("NumJug: " + NumJug);
+        if (parseInt(selectEl.value) !== parseInt(NumJug)) { iconoguardar.style.display = 'inline-block'; console.log("es diferente, inline block"); } else { iconoguardar.style.display = 'none'; console.log("es igual, none"); }
+
+        
+    }
+</script>

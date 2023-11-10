@@ -1,4 +1,5 @@
-﻿using LostArkOffice.Models;
+﻿using LostArkOffice.Migrations;
+using LostArkOffice.Models;
 using LostArkOffice.Models.DataModels;
 using LostArkOffice.Models.ViewModels.SuperAdmin;
 using Microsoft.AspNetCore.Authorization;
@@ -41,19 +42,6 @@ namespace LostArkOffice.Controllers
             ViewBag.Title = "Disponibilidades";
             return View();
         }
-        public async Task<IActionResult> Gremios()
-        {
-            var gremios = await _context.Gremios.ToListAsync();
-            var gremiosviewmodel = new List<GremiosViewModel>(); //el viewbag será una lista de gremios
-            var gremioviewmodel = new GremiosViewModel();
-            foreach (var gremio in gremios)
-            {
-                gremiosviewmodel.Add( new GremiosViewModel { Id=gremio.Id,Nombre=gremio.Nombre }); //rellenamos con todos los gremios existentes
-            }
-            ViewBag.ListaGremios = gremiosviewmodel;
-            ViewBag.Title = "Gremios";
-            return View(gremioviewmodel);
-        }
         public IActionResult Personajes()
         {
             ViewBag.Title = "Personajes";
@@ -64,20 +52,29 @@ namespace LostArkOffice.Controllers
             ViewBag.Title = "Raids";
             return View();
         }
-        public async Task<IActionResult> Roles()
+        #region TiposdeRaid
+        public async Task<IActionResult> TiposDeRaid()
         {
-            var model = new RolesViewModel
-            {
-                Roles = await _roleManager.Roles.ToListAsync()
-            };
-            ViewBag.Title = "Roles";
-            return View(model);
-        }
-        public IActionResult TiposDeRaid()
-        {
+            ViewBag.TiposDeRaidLista = await _context.TiposDeRaid.ToListAsync();
             ViewBag.Title = "Tipos de Raid";
-            return View();
+            return View(new TipoDeRaid());
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken] 
+        public async Task<IActionResult> CrearTipoDeRaid(string Nombre, short NumJugadores)
+        {
+            if (!Nombre.IsNullOrEmpty() && (NumJugadores == 4 || NumJugadores == 8)) 
+            { 
+                var nuevotiporaid = new TipoDeRaid() { Nombre = Nombre,NumJugadores = NumJugadores };
+                await _context.TiposDeRaid.AddAsync(nuevotiporaid);
+                var result = await _context.SaveChangesAsync();
+                if (result > 0) return RedirectToAction("TiposDeRaid");
+                else return BadRequest("El resultade de saveChangesAsync fue =< 0");
+            }
+            else return BadRequest("El nombre es requerido para agregar un nuevo tipo de raid o Num Jugadores no es 4 u 8");
+        }
+        #endregion
+        #region Usuarios
         public async Task<IActionResult> Usuarios()
         {
             var usuariosimportados = await _userManager.Users.Include(u => u.Gremio).ToListAsync();
@@ -101,7 +98,17 @@ namespace LostArkOffice.Controllers
             ViewBag.Title = "Usuarios";
             return View(modelosvista);
         }
-
+        #endregion
+        #region Rol
+        public async Task<IActionResult> Roles()
+        {
+            var model = new RolesViewModel
+            {
+                Roles = await _roleManager.Roles.ToListAsync()
+            };
+            ViewBag.Title = "Roles";
+            return View(model);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CrearRol(RolesViewModel modelo)
@@ -141,8 +148,21 @@ namespace LostArkOffice.Controllers
             else { var result = await _userManager.AddToRoleAsync(Usuario, Rol.Name); return Json(new { success = result.Succeeded, message = result.Succeeded ? "Operación exitosa" : "Error en la operación" }); }
 
         }
-
-
+        #endregion
+        #region gremios
+        public async Task<IActionResult> Gremios()
+        {
+            var gremios = await _context.Gremios.ToListAsync();
+            var gremiosviewmodel = new List<GremiosViewModel>(); //el viewbag será una lista de gremios
+            var gremioviewmodel = new GremiosViewModel();
+            foreach (var gremio in gremios)
+            {
+                gremiosviewmodel.Add(new GremiosViewModel { Id = gremio.Id, Nombre = gremio.Nombre }); //rellenamos con todos los gremios existentes
+            }
+            ViewBag.ListaGremios = gremiosviewmodel;
+            ViewBag.Title = "Gremios";
+            return View(gremioviewmodel);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CrearGremio(string Nombre)
@@ -152,11 +172,11 @@ namespace LostArkOffice.Controllers
                 var nuevoGremio = new Gremio() { Nombre = Nombre };
                 await _context.Gremios.AddAsync(nuevoGremio);
                  var result = await _context.SaveChangesAsync();
-                return RedirectToAction("Gremios");
+                if (result > 0) return RedirectToAction("Gremios");
+                else return BadRequest("El resultade de saveChangesAsync fue =< 0");
             }
             else return BadRequest("El nombre es requerido para agregar un nuevo nombre");
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken] 
         public async Task<IActionResult> EditarGremio([FromBody] GremiosViewModel modelo)
@@ -187,6 +207,6 @@ namespace LostArkOffice.Controllers
                 return RedirectToAction("Gremios");
             else return BadRequest("no se ha podido borrar");
         }
-
+        #endregion
     }
 }

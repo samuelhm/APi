@@ -14,8 +14,10 @@
         <input type="submit" value="CrearGremio" class="btn btn-primary" />
     </div>
 </form>
+<h2 class="mt-5">Lista Gremios Existentes</h2>
 <table class="table">
     <thead>
+
         <tr>
             <th>Id del Gremio</th>
             <th>Nombre Del Gremio</th>
@@ -29,7 +31,7 @@
                 <td>@gremio.Id</td>
                 <td>
                     <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text" id="spangremionombre-@gremio.Nombre">@gremio.Nombre</span><input onblur="hideinput('@gremio.Id')" class="form-control" id="inputgremionombre-@gremio.Id" type="text" style="display:none" /><a id="a-@gremio.Id" href="#" onclick="showinput('@gremio.Id')"><img class="ms-2" onclick="" src="~/Images/Iconos/edit.svg" /></a>
+                        <span class="input-group-text" id="spangremionombre-@gremio.Id">@gremio.Nombre</span><input onblur="" class="form-control" id="inputgremionombre-@gremio.Id" type="text" style="display:none" /><a id="a-@gremio.Id" href="#" onclick="showinput('@gremio.Id')"><img class="ms-2" onclick="" src="~/Images/Iconos/edit.svg" /></a>
                     </div>
                 </td>
                 <td>
@@ -58,16 +60,18 @@
     }
 </script>
 <script>
-    function jsEditarGremio(gremioId,gremioName) {
-        console.log("Editando Gremio, Id: " + gremioId+ " Nombre: "+ gremioName);
+    function jsEditarGremio(gremioId) {
+        console.log("Editando Gremio, Id: " + gremioId);
+        var gremioNuevoNombre = document.getElementById("inputgremionombre-" + gremioId);
+        console.log("Cambiando al Nombre:" + gremioNuevoNombre.value);
         fetch('/SuperAdmin/EditarGremio',
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', RequestVerificationToken: document.querySelector('input[name="__RequestVerificationToken"]').value },
-                body: JSON.stringify({ Id: gremioId,Nombre: gremioName })
+                body: JSON.stringify({ Id: gremioId,Nombre: gremioNuevoNombre.value })
             })
             .then(response => {
-                if (response.ok) {  } //Actualizar la fila
+                if (response.ok) { document.getElementById('spangremionombre-' + gremioId).textContent = gremioNuevoNombre.value; hideinput(gremioId); } //Actualizar la fila
                 else { alert('Hubo un error al intentar Editar el gremio.'); }
             })
             .catch(error => { console.error('Error:', error); });
