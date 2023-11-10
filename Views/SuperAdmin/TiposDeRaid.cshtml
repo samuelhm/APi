@@ -37,8 +37,9 @@
         {
             <tr id="row-@raid.Id">
                 <td>@raid.Nombre</td>
-                <td>
-                    <select onchange="jsMostrarSaveIcon(@raid.Id,@raid.NumJugadores)" style="width:min-content;float: left" id="selectTipoRaid-@raid.Id" class="form-select" aria-label="Num Jugadores">
+                <td class="row align-items-center">
+                    <div class="col-4">
+                    <select onchange="jsMostrarSaveIcon(@raid.Id,@raid.NumJugadores)" id="selectTipoRaid-@raid.Id" class="form-select" aria-label="Num Jugadores">
                         @if (raid.NumJugadores == 4)
                         {
                             <option selected value="4">4</option>
@@ -49,7 +50,11 @@
                         <option value="8" selected>8</option>
                         <option value="4">4</option>
                         }
-                    </select><a class="ms-1"style="display:none" href="#" id="a-edit-@raid.Id" onclick="jsEditarTipoRaid(@raid.Id)"><img style="width:auto" src="~/Images/Iconos/floppy.svg" /></a>
+                    </select>
+                    </div>
+                    <div class="col-1">
+                    <a style="display:none" href="#" id="a-edit-@raid.Id" onclick="jsEditarTipoRaid(@raid.Id)"><img style="width:auto" src="~/Images/Iconos/floppy.svg" /></a>
+                    </div>
                 </td>
                 <td>
                     <a href="#" id="a-delete-@raid.Id" onclick="jsBorrarTipoRaid(@raid.Id)"><img src="~/Images/Iconos/delete.svg" /></a>
